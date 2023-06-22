@@ -14,15 +14,34 @@ use Illuminate\Support\Facades\Auth;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::group(['namespace' => 'App\Http\Controllers'], function()
+{   
+    /**
+     * Home Routes
+     */
+    Route::get('/', 'HomeController@index')->name('home.index');
+
+    Route::group(['middleware' => ['guest']], function() {
+        /**
+         * Register Routes
+         */
+        Route::get('/register', 'RegisterController@show')->name('register.show');
+        Route::post('/register', 'RegisterController@register')->name('register');
+
+        /**
+         * Login Routes
+         */
+        Route::get('/login', 'LoginController@show')->name('login.show');
+        Route::post('/login', 'LoginController@login')->name('login');
+
+    });
+
+    Route::group(['middleware' => ['auth']], function() {
+        /**
+         * Logout Routes
+         */
+        Route::post('/logout', 'LogoutController@perform')->name('logout');
+
+        Route::get('/admin', 'AdminController@index')->name('admin');
+    });
 });
-Route::get('/login', function () {
-    return view('auth.login');})->name('login');
-    Route::post('/register', function () {
-        return view('auth.register');})->name('register');
-
-
-Route::get('/admin', function () {
-    return view('welcome');
-})->middleware('auth');

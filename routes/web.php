@@ -21,6 +21,12 @@ Route::group(['namespace' => 'App\Http\Controllers'], function()
      */
     Route::get('/', 'HomeController@index')->name('home.index');
 
+    Route::group(['middleware' => ['auth:api']], function() {
+        Route::get('/api/payment/get', 'TransferController@index');
+        Route::post('/api/payment/create', 'TransferController@save');
+    });
+
+  
     Route::group(['middleware' => ['guest']], function() {
         /**
          * Register Routes
@@ -43,5 +49,6 @@ Route::group(['namespace' => 'App\Http\Controllers'], function()
         Route::post('/logout', 'LogoutController@perform')->name('logout');
 
         Route::get('/admin', 'AdminController@index')->name('admin');
+        
     });
 });
